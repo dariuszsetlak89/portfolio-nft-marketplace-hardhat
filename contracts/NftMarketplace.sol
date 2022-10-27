@@ -12,12 +12,12 @@ import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 //////////////
 error NftMarketplace__PriceMustBeAboveZero();
 error NftMarketplace__NotAprovedForMarketplace();
-error NftMarketplace__NotOwner();
+error NftMarketplace__IsNotOwner();
+error NftMarketplace__IsOwner();
 error NftMarketplace__NotListed(address nftAddress, uint256 tokenId);
 error NftMarketplace__AlreadyListed(address nftAddress, uint256 tokenId);
 error NftMarketplace__PriceNotMet(address nftAddress, uint256 tokenId, uint256 price);
 error NftMarketplace__NoProceeds();
-error NftMarketplace__TransferFailed();
 
 ////////////////////
 // Smart Contract //
@@ -53,7 +53,8 @@ contract NftMarketplace is ReentrancyGuard {
     event ItemListed(address indexed seller, address indexed nftAddress, uint256 indexed tokenId, uint256 price);
     event ItemBought(address indexed buyer, address indexed nftAddress, uint256 indexed tokenId, uint256 price);
     event ItemCanceled(address indexed seller, address indexed nftAddress, uint256 indexed tokenId);
-    event EthTransferReceived(uint256 indexed amount);
+    event TransferReceived(uint256 indexed amount);
+    event ProceedsWithdrawalSuccess(address indexed seller, uint256 indexed proceeds);
 
     ////////////////
     //  Mappings  //
@@ -79,7 +80,21 @@ contract NftMarketplace is ReentrancyGuard {
         IERC721 nft = IERC721(nftAddress);
         address owner = nft.ownerOf(tokenId);
         if (spender != owner) {
-            revert NftMarketplace__NotOwner();
+            revert NftMarketplace__IsNotOwner();
+        }
+        _;
+    }
+
+    /// @dev Modifier checks if NFT Spender is NOT the NFT Owner
+    modifier isNotOwner(
+        address nftAddress,
+        uint256 tokenId,
+        address spender
+    ) {
+        IERC721 nft = IERC721(nftAddress);
+        address owner = nft.ownerOf(tokenId);
+        if (spender == owner) {
+            revert NftMarketplace__IsOwner();
         }
         _;
     }
@@ -173,7 +188,13 @@ contract NftMarketplace is ReentrancyGuard {
      * @param nftAddress listing NFT item contract address
      * @param tokenId listing NFT item tokenId
      */
-    function buyItem(address nftAddress, uint256 tokenId) external payable nonReentrant isListed(nftAddress, tokenId) {
+    function buyItem(address nftAddress, uint256 tokenId)
+        external
+        payable
+        nonReentrant
+        isListed(nftAddress, tokenId)
+        isNotOwner(nftAddress, tokenId, msg.sender)
+    {
         Listing memory listedItem = s_listings[nftAddress][tokenId];
         // Check if sent value met the item price
         if (msg.value < listedItem.price) {
@@ -203,8 +224,8 @@ contract NftMarketplace is ReentrancyGuard {
      */
     function cancelListing(address nftAddress, uint256 tokenId)
         external
-        isOwner(nftAddress, tokenId, msg.sender)
         isListed(nftAddress, tokenId)
+        isOwner(nftAddress, tokenId, msg.sender)
     {
         delete (s_listings[nftAddress][tokenId]);
         emit ItemCanceled(msg.sender, nftAddress, tokenId);
@@ -250,8 +271,8 @@ contract NftMarketplace is ReentrancyGuard {
         }
         s_proceeds[msg.sender] = 0;
         (bool success, ) = payable(msg.sender).call{value: proceeds}("");
-        if (!success) {
-            revert NftMarketplace__TransferFailed();
+        if (success) {
+            emit ProceedsWithdrawalSuccess(msg.sender, proceeds);
         }
     }
 
@@ -280,6 +301,14 @@ contract NftMarketplace is ReentrancyGuard {
         return s_proceeds[seller];
     }
 
+    /**
+     * @dev Getter function to get this `nftMarketplace` smart contract balance.
+     * @return Balnace of this smart contract.
+     */
+    function getBalance() external view returns (uint256) {
+        return address(this).balance;
+    }
+
     /////////////////////
     // Other Functions //
     /////////////////////
@@ -290,7 +319,7 @@ contract NftMarketplace is ReentrancyGuard {
      */
     receive() external payable {
         // console.log("Function `receive` invoked");
-        emit EthTransferReceived(msg.value);
+        emit TransferReceived(msg.value);
     }
 
     /**
@@ -300,6 +329,6 @@ contract NftMarketplace is ReentrancyGuard {
      */
     fallback() external payable {
         // console.log("Function `fallback` invoked");
-        emit EthTransferReceived(msg.value);
+        emit TransferReceived(msg.value);
     }
 }
