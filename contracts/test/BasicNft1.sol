@@ -9,8 +9,8 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 //////////////
 //  Errors  //
 //////////////
-error BasicNft1__ReceivedTransferReverted();
-error BasicNft1__InvalidFunctionCall();
+error BasicNft__ReceivedTransferReverted();
+error BasicNft__InvalidFunctionCall();
 
 /**
  * @title BasicNft1 contract
@@ -98,7 +98,7 @@ contract BasicNft1 is ERC721 {
      * reverts all unintended fund transfers.
      */
     receive() external payable {
-        revert BasicNft1__ReceivedTransferReverted();
+        revert BasicNft__ReceivedTransferReverted();
     }
 
     /**
@@ -107,6 +107,6 @@ contract BasicNft1 is ERC721 {
      * Function reverts transaction if called function is not found in the contract.
      */
     fallback() external payable {
-        revert BasicNft1__InvalidFunctionCall();
+        revert BasicNft__InvalidFunctionCall();
     }
 }
