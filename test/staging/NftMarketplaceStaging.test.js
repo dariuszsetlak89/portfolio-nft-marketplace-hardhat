@@ -7,29 +7,18 @@ developmentChains.includes(network.name)
     : describe("NFT Marketplace Staging Test", function () {
           let nftMarketplace,
               nftMarketplaceContract,
-              basicNft1,
-              basicNftContract1,
-              basicNft2,
-              basicNftContract2,
-              basicNft3,
-              basicNftContract3,
+              cuteNft,
+              cuteNftContract,
               deployer,
               user,
               updatedPrice,
-              basicNft1TokenCounter,
-              basicNft2TokenCounter,
-              basicNft3TokenCounter,
-              basicNft1Listing,
-              basicNft2Listing,
-              basicNft3Listing,
-              basicNft1NewOwner,
-              basicNft2NewOwner,
-              provider,
+              firstListing,
+              secondListing,
+              thirdListing,
               deployerBalanceBefore,
               deployerBalanceAfter;
 
           const PRICE = ethers.utils.parseEther("1");
-          const TOKEN_ID = 0;
 
           beforeEach(async () => {
               //// Deploy all smart contracts
@@ -42,17 +31,9 @@ developmentChains.includes(network.name)
               nftMarketplaceContract = await ethers.getContract("NftMarketplace");
               nftMarketplace = nftMarketplaceContract.connect(deployer);
 
-              //// Get contract: BasicNft1
-              basicNftContract1 = await ethers.getContract("BasicNft1");
-              basicNft1 = basicNftContract1.connect(deployer);
-
-              //// Get contract: BasicNft2
-              basicNftContract2 = await ethers.getContract("BasicNft2");
-              basicNft2 = basicNftContract2.connect(deployer);
-
-              //// Get contract: BasicNft3
-              basicNftContract3 = await ethers.getContract("BasicNft3");
-              basicNft3 = basicNftContract3.connect(deployer);
+              //// Get contract: CuteNft
+              cuteNftContract = await ethers.getContract("CuteNft");
+              cuteNft = cuteNftContract.connect(deployer);
           });
 
           describe("NFT Marketplace Usage", async () => {
@@ -62,127 +43,120 @@ developmentChains.includes(network.name)
                   console.log("-------------------------------------------------------------");
 
                   // Test description:
-                  //// 1) Deployer mints 3 NFT items: BasicNft1, BasicNft2, BasicNft3
-                  //// 2) Deployer lists 3 minted NFT items
-                  //// 3) User buys item BasicNft1
-                  //// 4) Deployer updates listing price of BasicNft2
-                  //// 5) User buys item BasicNft2
-                  //// 6) Deployer cancels listing of BasicNft3
+                  //// 1) Deployer mints 3 CuteNft items
+                  //// 2) Deployer lists minted NFTs
+                  //// 3) User buys first NFT item
+                  //// 4) Deployer updates listing price of second NFT
+                  //// 5) User buys second NFT item
+                  //// 6) Deployer cancels listing of third NFT item
                   //// 7) Deployer witrdraws proceeds
                   //// 8) FINAL NFTS' OWNERSHIPS
 
                   // -------------------------------------------------------------------------
 
-                  //// 1) Deployer mints 3 NFT items: BasicNft1, BasicNft2, BasicNft3
-                  console.log("1) Deployer mints 3 NFT items: BasicNft1, BasicNft2, BasicNft3");
+                  //// 1) Deployer mints 3 CuteNft items
+                  console.log("1) Deployer mints 3 CuteNft items");
                   // Mint NFTs - deployer
-                  expect(await basicNft1.mintNft())
-                      .to.emit("NftMinted")
+                  expect(await cuteNft.mintNft(deployer.address, 0))
+                      .to.emit("CuteNftMinted")
                       .withArgs(0);
-                  expect(await basicNft2.mintNft())
-                      .to.emit("NftMinted")
+                  expect(await cuteNft.mintNft(deployer.address, 1))
+                      .to.emit("CuteNftMinted")
                       .withArgs(0);
-                  expect(await basicNft3.mintNft())
-                      .to.emit("NftMinted")
+                  expect(await cuteNft.mintNft(deployer.address, 2))
+                      .to.emit("CuteNftMinted")
                       .withArgs(0);
-                  // Get token counters
-                  basicNft1TokenCounter = await basicNft1.getTokenCounter();
-                  console.log("basicNft1 tokenCounter:", basicNft1TokenCounter.toString());
-                  basicNft2TokenCounter = await basicNft1.getTokenCounter();
-                  console.log("basicNft2 tokenCounter:", basicNft2TokenCounter.toString());
-                  basicNft3TokenCounter = await basicNft1.getTokenCounter();
-                  console.log("basicNft3 tokenCounter:", basicNft3TokenCounter.toString());
 
                   console.log("-------------------------------------------------------------");
 
-                  //// 2) Deployer lists 3 minted NFT items
-                  console.log("2) Deployer lists 3 minted NFT items");
+                  //// 2) Deployer lists minted NFTs
+                  console.log("2) Deployer lists minted NFTs");
                   // Approve NFTs to be listed on the NFT Marketplace
-                  await basicNft1.approve(nftMarketplace.address, TOKEN_ID);
-                  await basicNft2.approve(nftMarketplace.address, TOKEN_ID);
-                  await basicNft3.approve(nftMarketplace.address, TOKEN_ID);
+                  await cuteNft.approve(nftMarketplace.address, 0);
+                  await cuteNft.approve(nftMarketplace.address, 1);
+                  await cuteNft.approve(nftMarketplace.address, 2);
                   // List NFTs on the NFT Marketplace
-                  expect(await nftMarketplace.listItem(basicNft1.address, TOKEN_ID, PRICE))
+                  expect(await nftMarketplace.listItem(cuteNft.address, 0, PRICE))
                       .to.emit("ItemListed")
-                      .withArgs(deployer, basicNft1.address, TOKEN_ID, PRICE);
-                  expect(await nftMarketplace.listItem(basicNft2.address, TOKEN_ID, PRICE))
+                      .withArgs(deployer.address, cuteNft.address, 0, PRICE);
+                  expect(await nftMarketplace.listItem(cuteNft.address, 1, PRICE))
                       .to.emit("ItemListed")
-                      .withArgs(deployer, basicNft2.address, TOKEN_ID, PRICE);
-                  expect(await nftMarketplace.listItem(basicNft3.address, TOKEN_ID, PRICE))
+                      .withArgs(deployer.address, cuteNft.address, 1, PRICE);
+                  expect(await nftMarketplace.listItem(cuteNft.address, 2, PRICE))
                       .to.emit("ItemListed")
-                      .withArgs(deployer, basicNft3.address, TOKEN_ID, PRICE);
+                      .withArgs(deployer.address, cuteNft.address, 2, PRICE);
                   // Get listings
-                  basicNft1Listing = await nftMarketplace.getListing(basicNft1.address, TOKEN_ID);
-                  console.log("basicNft1 listing price:", ethers.utils.formatEther(basicNft1Listing.price.toString()));
-                  console.log("basicNft1 seller:", basicNft1Listing.seller.toString());
+                  firstListing = await nftMarketplace.getListing(cuteNft.address, 0);
+                  console.log("First cuteNft listing price:", ethers.utils.formatEther(firstListing.price.toString()));
+                  console.log("First cuteNft seller:", firstListing.seller.toString());
                   //
-                  basicNft2Listing = await nftMarketplace.getListing(basicNft2.address, TOKEN_ID);
-                  console.log("basicNft2 listing price:", ethers.utils.formatEther(basicNft2Listing.price.toString()));
-                  console.log("basicNft2 seller:", basicNft2Listing.seller.toString());
+                  secondListing = await nftMarketplace.getListing(cuteNft.address, 1);
+                  console.log("Second cuteNft listing price:", ethers.utils.formatEther(secondListing.price.toString()));
+                  console.log("Second cuteNft seller:", secondListing.seller.toString());
                   //
-                  basicNft3Listing = await nftMarketplace.getListing(basicNft3.address, TOKEN_ID);
-                  console.log("basicNft3 listing price:", ethers.utils.formatEther(basicNft3Listing.price.toString()));
-                  console.log("basicNft3 seller:", basicNft3Listing.seller.toString());
+                  thirdListing = await nftMarketplace.getListing(cuteNft.address, 2);
+                  console.log("Third cuteNft listing price:", ethers.utils.formatEther(thirdListing.price.toString()));
+                  console.log("Third cuteNft seller:", thirdListing.seller.toString());
 
                   console.log("-------------------------------------------------------------");
 
-                  //// 3) User buys item BasicNft1
-                  console.log("3) User buys item BasicNft1");
+                  //// 3) User buys first NFT item
+                  console.log("3) User buys first NFT item");
                   nftMarketplace = nftMarketplaceContract.connect(user);
-                  expect(await nftMarketplace.buyItem(basicNft1.address, TOKEN_ID, { value: PRICE }))
+                  expect(await nftMarketplace.buyItem(cuteNft.address, 0, { value: PRICE }))
                       .to.emit("ItemBought")
-                      .withArgs(deployer, basicNft1.address, TOKEN_ID, PRICE);
+                      .withArgs(deployer.address, cuteNft.address, 0, PRICE);
                   //
-                  basicNft1NewOwner = await basicNft1.ownerOf(TOKEN_ID);
-                  console.log("basicNft1 newOwner:", basicNft1NewOwner);
+                  cuteNftNewOwner = await cuteNft.ownerOf(0);
+                  console.log("cuteNft newOwner:", cuteNftNewOwner);
                   //
-                  basicNft1Listing = await nftMarketplace.getListing(basicNft1.address, TOKEN_ID);
-                  console.log("basicNft1 delisted:");
-                  console.log("basicNft1 listing price:", ethers.utils.formatEther(basicNft1Listing.price.toString()));
-                  console.log("basicNft1 seller:", basicNft1Listing.seller.toString());
+                  cuteNftListing = await nftMarketplace.getListing(cuteNft.address, 0);
+                  console.log("cuteNft delisted:");
+                  console.log("cuteNft listing price:", ethers.utils.formatEther(cuteNftListing.price.toString()));
+                  console.log("cuteNft seller:", cuteNftListing.seller.toString());
 
                   console.log("-------------------------------------------------------------");
 
-                  //// 4) Deployer updates listing price of BasicNft2
-                  console.log("4) Deployer updates listing price of BasicNft2");
+                  //// 4) Deployer updates listing price of second NFT
+                  console.log("4) Deployer updates listing price of second NFT");
                   nftMarketplace = nftMarketplaceContract.connect(deployer);
                   updatedPrice = ethers.utils.parseEther("2");
-                  expect(await nftMarketplace.updateListing(basicNft2.address, TOKEN_ID, updatedPrice))
+                  expect(await nftMarketplace.updateListing(cuteNft.address, 1, updatedPrice))
                       .to.emit("ItemListed")
-                      .withArgs(deployer, basicNft2.address, TOKEN_ID, PRICE);
-                  basicNft2Listing = await nftMarketplace.getListing(basicNft2.address, TOKEN_ID);
-                  console.log("basicNft2 new listing price:", ethers.utils.formatEther(basicNft2Listing.price.toString()));
+                      .withArgs(deployer.address, cuteNft.address, 1, PRICE);
+                  cuteNftListing = await nftMarketplace.getListing(cuteNft.address, 1);
+                  console.log("cuteNft new listing price:", ethers.utils.formatEther(cuteNftListing.price.toString()));
 
                   console.log("-------------------------------------------------------------");
 
-                  //// 5) User buys item BasicNft2
-                  console.log("5) User buys item BasicNft2");
+                  //// 5) User buys second NFT item
+                  console.log("5) User buys second NFT item");
                   nftMarketplace = nftMarketplaceContract.connect(user);
-                  expect(await nftMarketplace.buyItem(basicNft2.address, TOKEN_ID, { value: updatedPrice }))
+                  expect(await nftMarketplace.buyItem(cuteNft.address, 1, { value: updatedPrice }))
                       .to.emit("ItemBought")
-                      .withArgs(deployer, basicNft2.address, TOKEN_ID, updatedPrice);
+                      .withArgs(deployer.address, cuteNft.address, 1, updatedPrice);
                   //
-                  basicNft2NewOwner = await basicNft2.ownerOf(TOKEN_ID);
-                  console.log("basicNft2 newOwner:", basicNft2NewOwner);
+                  cuteNftNewOwner = await cuteNft.ownerOf(1);
+                  console.log("cuteNft newOwner:", cuteNftNewOwner);
                   //
-                  basicNft2Listing = await nftMarketplace.getListing(basicNft2.address, TOKEN_ID);
-                  console.log("basicNft2 delisted:");
-                  console.log("basicNft2 listing price:", ethers.utils.formatEther(basicNft2Listing.price.toString()));
-                  console.log("basicNft2 seller:", basicNft2Listing.seller.toString());
+                  cuteNftListing = await nftMarketplace.getListing(cuteNft.address, 1);
+                  console.log("cuteNft delisted:");
+                  console.log("cuteNft listing price:", ethers.utils.formatEther(cuteNftListing.price.toString()));
+                  console.log("cuteNft seller:", cuteNftListing.seller.toString());
 
                   console.log("-------------------------------------------------------------");
 
-                  //// 6) Deployer cancels listing of BasicNft3
-                  console.log("6) Deployer cancels listing of BasicNft3");
+                  //// 6) Deployer cancels listing of third NFT item
+                  console.log("6) Deployer cancels listing of third NFT item");
                   nftMarketplace = nftMarketplaceContract.connect(deployer);
-                  expect(await nftMarketplace.cancelListing(basicNft3.address, TOKEN_ID))
+                  expect(await nftMarketplace.cancelListing(cuteNft.address, 2))
                       .to.emit("ItemCanceled")
-                      .withArgs(deployer, basicNft3.address, TOKEN_ID);
+                      .withArgs(deployer.address, cuteNft.address, 2);
                   //
-                  basicNft3Listing = await nftMarketplace.getListing(basicNft3.address, TOKEN_ID);
-                  console.log("basicNft3 delisted:");
-                  console.log("basicNft3 listing price:", ethers.utils.formatEther(basicNft3Listing.price.toString()));
-                  console.log("basicNft3 seller:", basicNft3Listing.seller.toString());
+                  cuteNftListing = await nftMarketplace.getListing(cuteNft.address, 2);
+                  console.log("cuteNft delisted:");
+                  console.log("cuteNft listing price:", ethers.utils.formatEther(cuteNftListing.price.toString()));
+                  console.log("cuteNft seller:", cuteNftListing.seller.toString());
 
                   console.log("-------------------------------------------------------------");
 
@@ -207,17 +181,17 @@ developmentChains.includes(network.name)
                   console.log("user address:", user.address);
                   console.log("");
                   //
-                  const basicNft1Owner = await basicNft1.ownerOf(TOKEN_ID);
-                  console.log("basicNft1 owner:", basicNft1Owner);
-                  assert.equal(basicNft1Owner, user.address);
+                  const cuteNft0Owner = await cuteNft.ownerOf(0);
+                  console.log("cuteNft0 owner:", cuteNft0Owner);
+                  assert.equal(cuteNft0Owner, user.address);
                   //
-                  const basicNft2Owner = await basicNft2.ownerOf(TOKEN_ID);
-                  console.log("basicNft2 owner:", basicNft2Owner);
-                  assert.equal(basicNft2Owner, user.address);
+                  const cuteNft1Owner = await cuteNft.ownerOf(1);
+                  console.log("cuteNft1 owner:", cuteNft1Owner);
+                  assert.equal(cuteNft1Owner, user.address);
                   //
-                  const basicNft3Owner = await basicNft3.ownerOf(TOKEN_ID);
-                  console.log("basicNft3 owner:", basicNft3Owner);
-                  assert.equal(basicNft3Owner, deployer.address);
+                  const cuteNft2Owner = await cuteNft.ownerOf(2);
+                  console.log("cuteNft2 owner:", cuteNft2Owner);
+                  assert.equal(cuteNft2Owner, deployer.address);
 
                   console.log("-------------------------------------------------------------");
               });

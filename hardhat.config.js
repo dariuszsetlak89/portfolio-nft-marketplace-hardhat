@@ -53,12 +53,12 @@ module.exports = {
         },
     },
     gasReporter: {
-        enabled: REPORT_GAS ? true : false,
+        enabled: REPORT_GAS == "true" ? true : false,
         outputFile: "gas-report.txt",
         currency: "USD",
         noColors: true,
         token: "ETH", // ETH (default), BNB, MATIC, AVAX
-        // coinmarketcap: process.env.COINMARKETCAP_API_KEY,
+        // coinmarketcap: COINMARKETCAP_API_KEY,
     },
     contractSizer: {
         runOnCompile: false,

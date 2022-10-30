@@ -33,8 +33,7 @@
     "lint": "solhint 'contracts/*.sol'",
     "lint:fix": "solhint 'contracts/**/*.sol' --fix",
     "format": "prettier --write .",
-    "coverage": "hardhat coverage --solcoverjs ./.solcover.js",
-    "fuzzing": "docker run -it --rm -v $PWD:/src trailofbits/eth-security-toolbox"
+    "coverage": "hardhat coverage --solcoverjs ./.solcover.js"
   },
   "mocha": {
     "timeout": 10000000
