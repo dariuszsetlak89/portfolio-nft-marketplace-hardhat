@@ -47,12 +47,12 @@ const { developmentChains } = require("../../helper-hardhat-config");
           });
 
           describe("mintNft", () => {
-              it("Allows users to mint an NFT, and updates appropriately", async () => {
+              it("allows users to mint an NFT and updates appropriately", async () => {
                   const deployerNftBalance = await cuteNft.balanceOf(deployer.address);
                   // console.log("deployerNftBalance:", deployerNftBalance.toString());
                   assert.equal(deployerNftBalance, 1);
               });
-              it("Increments `tokenIdCounter` after NFT mint", async () => {
+              it("increments `tokenIdCounter` after NFT mint", async () => {
                   const tokenCounter = await cuteNft.getTokenCounter();
                   assert.equal(tokenCounter.toString(), "1");
               });

@@ -25,8 +25,8 @@ error NftMarketplace__NoProceeds();
 
 /**
  * @title NftMarketplace contract
- * @author Patrick Collins, Dariusz Setlak
- * @notice The main NFT Marketplace Smart Contract
+ * @author Dariusz Setlak
+ * @notice The NFT Marketplace Smart Contract
  * @dev The main smart contract of `NFT Marketplace` containing the following functions:
  * External functions: listItem, buyItem, cancelListing, updateListing, withdrawProceeds
  * Getter functions: getListing, getProceeds

@@ -2,18 +2,8 @@ const { ethers, network } = require("hardhat");
 const { developmentChains } = require("../helper-hardhat-config");
 const { moveBlocks } = require("../utils/move-blocks");
 
-async function mintAndListItem() {
-    let deployer,
-        user,
-        nftMarketplaceContract,
-        nftMarketplace,
-        cuteNftContract,
-        cuteNft,
-        randomUriIndex,
-        mintTx,
-        mintTxReceipt,
-        approvalTx,
-        listTx;
+async function listItem() {
+    let deployer, user, nftMarketplaceContract, nftMarketplace, cuteNftContract, cuteNft, approvalTx, listTx;
 
     // Get accounts
     [deployer, user] = await ethers.getSigners();
@@ -25,10 +15,15 @@ async function mintAndListItem() {
     const LISTING_PRICE = ethers.utils.parseEther("0.1");
     //////////////////////////////////////////////////////
 
-    //////////////////////////////////////////////////////
+    ////////////////////////////////////////////
     // NFT owner address choice: deployer, user
     const NFT_OWNER = deployer;
-    //////////////////////////////////////////////////////
+    ////////////////////////////////////////////
+
+    //////////////////////////////
+    // tokenId of NFT for listing:
+    const TOKEN_ID = 1;
+    //////////////////////////////
 
     // Get contract: nftMarketplace
     nftMarketplaceContract = await ethers.getContract("NftMarketplace");
@@ -37,16 +32,6 @@ async function mintAndListItem() {
     cuteNftContract = await ethers.getContract("CuteNft");
     cuteNft = cuteNftContract.connect(NFT_OWNER);
     console.log("CuteNft address:", cuteNft.address);
-
-    // Minting
-    console.log("Minting NFT...");
-    cuteNft = cuteNftContract.connect(NFT_OWNER);
-    randomUriIndex = Math.floor(Math.random() * 3);
-    mintTx = await cuteNft.mintNft(NFT_OWNER.address, randomUriIndex);
-    mintTxReceipt = await mintTx.wait(1);
-    const TOKEN_ID = await mintTxReceipt.events[0].args.tokenId;
-    console.log("TOKEN_ID:", TOKEN_ID.toString());
-    console.log("Minting done.");
 
     // Approving
     console.log("Approving...");
@@ -60,11 +45,7 @@ async function mintAndListItem() {
     listTx = await nftMarketplace.listItem(cuteNft.address, TOKEN_ID, LISTING_PRICE);
     await listTx.wait(1);
     console.log("Listing done.");
-    console.log(
-        `NFT minted, approved and listed: TokenID: ${TOKEN_ID}, URI index: ${randomUriIndex}, Listing price: ${ethers.utils.formatEther(
-            LISTING_PRICE
-        )} ETH`
-    );
+    console.log(`NFT approved and listed: TokenID: ${TOKEN_ID}, Listing price: ${ethers.utils.formatEther(LISTING_PRICE)} ETH`);
 
     // Mining blocks on local network
     if (developmentChains.includes(network.name)) {
@@ -72,7 +53,7 @@ async function mintAndListItem() {
     }
 }
 
-mintAndListItem()
+listItem()
     .then(() => process.exit(0))
     .catch((error) => {
         console.error(error);

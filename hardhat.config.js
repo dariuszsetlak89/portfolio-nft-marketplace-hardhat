@@ -42,7 +42,7 @@ module.exports = {
             tags: ["staging", "live"],
             url: GOERLI_RPC_URL,
             accounts: PRIVATE_KEY !== undefined ? [PRIVATE_KEY] : [],
-            blockConfirmations: 6,
+            blockConfirmations: 2,
         },
     },
     etherscan: {
@@ -62,7 +62,6 @@ module.exports = {
     },
     contractSizer: {
         runOnCompile: false,
-        // only: ["APIConsumer", "KeepersCounter", "PriceConsumerV3", "RandomNumberConsumerV2"],
     },
     namedAccounts: {
         deployer: {

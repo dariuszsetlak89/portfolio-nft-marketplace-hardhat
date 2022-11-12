@@ -3,27 +3,37 @@ const { moveBlocks } = require("../utils/move-blocks");
 const { developmentChains } = require("../helper-hardhat-config");
 
 async function cancelItem() {
-    let deployer, nftMarketplaceContract, nftMarketplace, cuteNftContract, cuteNft;
-
-    //////////////////////////
-    // tokenId choice
-    const TOKEN_ID = 1;
-    //////////////////////////
+    let deployer, nftMarketplaceContract, nftMarketplace, cuteNftContract, cuteNft, cancelTx;
 
     /// Get accounts
-    [deployer] = await ethers.getSigners();
+    [deployer, user] = await ethers.getSigners();
+    console.log("Deployer address:", deployer.address); // account[0]
+    console.log("User address:", user.address); // account[1]
+
+    ////////////////////////////////////////////
+    // NFT owner address choice: deployer, user
+    const NFT_OWNER = deployer;
+    ////////////////////////////////////////////
+
+    /////////////////////////////
+    // tokenId of NFT for cancel:
+    const TOKEN_ID = 1;
+    /////////////////////////////
+
     // Get contract: nftMarketplace
     nftMarketplaceContract = await ethers.getContract("NftMarketplace");
-    nftMarketplace = nftMarketplaceContract.connect(deployer);
+    nftMarketplace = nftMarketplaceContract.connect(NFT_OWNER);
     // Get contract: CuteNft
     cuteNftContract = await ethers.getContract("CuteNft");
-    cuteNft = cuteNftContract.connect(deployer);
+    cuteNft = cuteNftContract.connect(NFT_OWNER);
     console.log("CuteNft address:", cuteNft.address);
 
     // Cancel listing
-    const tx = await nftMarketplace.cancelListing(cuteNft.address, TOKEN_ID);
-    await tx.wait(1);
+    console.log("Canceling...");
+    cancelTx = await nftMarketplace.cancelListing(cuteNft.address, TOKEN_ID);
+    await cancelTx.wait(1);
     console.log(`NFT canceled: TokenID: ${TOKEN_ID}`);
+    console.log("Canceling done.");
 
     // Mining blocks on local network
     if (developmentChains.includes(network.name)) {

@@ -5,29 +5,39 @@ const { developmentChains } = require("../helper-hardhat-config");
 async function updateListingPrice() {
     let deployer, nftMarketplaceContract, nftMarketplace, cuteNftContract, cuteNft, updateTx;
 
-    //////////////////////////
-    // tokenId choice
-    const TOKEN_ID = 0;
-    //////////////////////////
+    /// Get accounts
+    [deployer, user] = await ethers.getSigners();
+    console.log("Deployer address:", deployer.address); // account[0]
+    console.log("User address:", user.address); // account[1]
+
+    ////////////////////////////////////////////
+    // NFT owner address choice: deployer, user
+    const NFT_OWNER = deployer;
+    ////////////////////////////////////////////
+
+    /////////////////////////////
+    // tokenId of NFT for cancel:
+    const TOKEN_ID = 2;
+    /////////////////////////////
 
     ////////////////////////////////////////////////
     // Updated price choice
-    const NEW_PRICE = ethers.utils.parseEther("33");
+    const NEW_PRICE = ethers.utils.parseEther("0.2");
     ////////////////////////////////////////////////
 
-    /// Get accounts
-    [deployer] = await ethers.getSigners();
     // Get contract: nftMarketplace
     nftMarketplaceContract = await ethers.getContract("NftMarketplace");
-    nftMarketplace = nftMarketplaceContract.connect(deployer);
+    nftMarketplace = nftMarketplaceContract.connect(NFT_OWNER);
     // Get contract: CuteNft
     cuteNftContract = await ethers.getContract("CuteNft");
-    cuteNft = cuteNftContract.connect(deployer);
+    cuteNft = cuteNftContract.connect(NFT_OWNER);
     console.log("CuteNft address:", cuteNft.address);
 
     // Update listing price
+    console.log("Updating listing price...");
     updateTx = await nftMarketplace.updateListing(cuteNft.address, TOKEN_ID, NEW_PRICE);
     await updateTx.wait(1);
+    console.log("Listing price updated.");
     console.log(`NFT price updated: TokenID: ${TOKEN_ID}, New price: ${ethers.utils.formatEther(NEW_PRICE.toString())} ETH`);
 
     // Mining blocks on local network

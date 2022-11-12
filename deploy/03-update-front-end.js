@@ -22,14 +22,14 @@ async function updateContractAddresses() {
     const contractAddresses = JSON.parse(fs.readFileSync(frontEndContractsFile, "utf8"));
     const chainId = network.config.chainId.toString();
     if (chainId in contractAddresses) {
-        // NftMarketplace address update
+        // NftMarketplace contract address update
         const nftMarketplaceChainAddress = contractAddresses[chainId]["NftMarketplace"];
         // console.log(nftMarketplaceChainAddress);
         if (!nftMarketplaceChainAddress.includes(nftMarketplace.address)) {
             nftMarketplaceChainAddress.pop();
             nftMarketplaceChainAddress.push(nftMarketplace.address);
         }
-        // CuteNft address update
+        // CuteNft contract address update
         const cuteNftChainAddress = contractAddresses[chainId]["CuteNft"];
         if (!cuteNftChainAddress.includes(cuteNft.address)) {
             cuteNftChainAddress.pop();

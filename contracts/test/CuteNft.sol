@@ -75,9 +75,9 @@ contract CuteNft is ERC721, ERC721URIStorage {
      * @param _uris token URI's array
      */
     function _initializeContract(string[] memory _uris) private {
-        // if (s_initialized) {
-        //     revert CuteNft__AlreadyInitialized();
-        // }
+        if (s_initialized) {
+            revert CuteNft__AlreadyInitialized();
+        }
         s_cuteNftUris = _uris;
         s_initialized = true;
     }

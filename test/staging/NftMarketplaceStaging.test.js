@@ -21,8 +21,10 @@ developmentChains.includes(network.name)
           const PRICE = ethers.utils.parseEther("1");
 
           beforeEach(async () => {
-              //// Deploy all smart contracts
-              await deployments.fixture(["all"]);
+              //////////////////////////////////////////////////////////////////////
+              //// Deploy all smart contracts - COMMENT THIS LINE FOR TESTNET TESTS
+              // await deployments.fixture(["all"]);
+              //////////////////////////////////////////////////////////////////////
 
               //// Get accounts: deployer, user
               [deployer, user] = await ethers.getSigners();

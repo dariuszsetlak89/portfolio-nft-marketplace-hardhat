@@ -1,5 +1,10 @@
 const { moveBlocks } = require("../utils/move-blocks");
 
+/////////////////////////////////////////////
+// Use only for testing on developent chains
+// Development chains: hardhat, localhost
+/////////////////////////////////////////////
+
 const BLOCKS = 1;
 
 async function mine() {
