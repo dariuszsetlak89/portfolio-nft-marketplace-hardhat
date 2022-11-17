@@ -29,7 +29,7 @@ error NftMarketplace__NoProceeds();
  * @notice The NFT Marketplace Smart Contract
  * @dev The main smart contract of `NFT Marketplace` containing the following functions:
  * External functions: listItem, buyItem, cancelListing, updateListing, withdrawProceeds
- * Getter functions: getListing, getProceeds
+ * Getter functions: getListing, getProceeds, getBalance
  * Other functions: receive, fallback
  */
 contract NftMarketplace is ReentrancyGuard {
@@ -53,8 +53,8 @@ contract NftMarketplace is ReentrancyGuard {
     event ItemListed(address indexed seller, address indexed nftAddress, uint256 indexed tokenId, uint256 price);
     event ItemBought(address indexed buyer, address indexed nftAddress, uint256 indexed tokenId, uint256 price);
     event ItemCanceled(address indexed seller, address indexed nftAddress, uint256 indexed tokenId);
+    event ProceedsWithdrawal(address indexed seller, uint256 indexed amount);
     event TransferReceived(uint256 indexed amount);
-    event ProceedsWithdrawalSuccess(address indexed seller, uint256 indexed proceeds);
 
     ////////////////
     //  Mappings  //
@@ -115,11 +115,7 @@ contract NftMarketplace is ReentrancyGuard {
      * @dev Modifier checks if NFT item is NOT listed to NFT Marketplace.
      * If listing price is > 0 then NFT item is already listed.
      */
-    modifier notListed(
-        address nftAddress,
-        uint256 tokenId,
-        address owner
-    ) {
+    modifier notListed(address nftAddress, uint256 tokenId) {
         Listing memory listing = s_listings[nftAddress][tokenId];
         if (listing.price > 0) {
             revert NftMarketplace__AlreadyListed(nftAddress, tokenId);
@@ -157,7 +153,7 @@ contract NftMarketplace is ReentrancyGuard {
         address nftAddress,
         uint256 tokenId,
         uint256 price
-    ) external notListed(nftAddress, tokenId, msg.sender) isOwner(nftAddress, tokenId, msg.sender) {
+    ) external notListed(nftAddress, tokenId) isOwner(nftAddress, tokenId, msg.sender) {
         // Check if listing price set by user is > 0
         if (price <= 0) {
             revert NftMarketplace__PriceMustBeAboveZero();
@@ -272,7 +268,7 @@ contract NftMarketplace is ReentrancyGuard {
         s_proceeds[msg.sender] = 0;
         (bool success, ) = payable(msg.sender).call{value: proceeds}("");
         if (success) {
-            emit ProceedsWithdrawalSuccess(msg.sender, proceeds);
+            emit ProceedsWithdrawal(msg.sender, proceeds);
         }
     }
 

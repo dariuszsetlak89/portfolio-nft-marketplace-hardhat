@@ -7,8 +7,8 @@ async function cancelItem() {
 
     /// Get accounts
     [deployer, user] = await ethers.getSigners();
-    console.log("Deployer address:", deployer.address); // account[0]
-    console.log("User address:", user.address); // account[1]
+    // console.log("Deployer address:", deployer.address); // account[0]
+    // console.log("User address:", user.address); // account[1]
 
     ////////////////////////////////////////////
     // NFT owner address choice: deployer, user
@@ -17,7 +17,7 @@ async function cancelItem() {
 
     /////////////////////////////
     // tokenId of NFT for cancel:
-    const TOKEN_ID = 1;
+    const TOKEN_ID = 0;
     /////////////////////////////
 
     // Get contract: nftMarketplace

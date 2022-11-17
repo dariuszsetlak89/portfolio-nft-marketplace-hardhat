@@ -21,9 +21,11 @@ error CuteNft__InvalidFunctionCall();
  * @notice The CuteNft Smart Contract
  * @dev The smart contract for minting test basic NFTs for testing `NFT Marketplace`.
  * Smart contract contains the following functions:
+ * Init function: _initializeContract
  * External functions: mintNft
- * Override functions: tokenURI
- * Getter functions: getTokenCounter
+ * Override functions: _burn, tokenURI
+ * Getter functions: getInitialized, getTokenCounter
+ * Other functions: receive, fallback
  */
 contract CuteNft is ERC721, ERC721URIStorage {
     using Counters for Counters.Counter;
@@ -114,13 +116,13 @@ contract CuteNft is ERC721, ERC721URIStorage {
     function _burn(uint256 _tokenId) internal override(ERC721, ERC721URIStorage) {}
 
     /**
-     * @dev Getter function to get token URI of given index from token URI's array.
+     * @dev Getter function to get token URI of given tokenId.
      * Function overrides ERC721 and ERC721URIStorage libraries functions.
-     * @param _index unique id of new minted token
-     * @return Value of token URI of given index from token URI's array
+     * @param _tokenId unique id of new minted token
+     * @return Value of token URI of given _tokenId
      */
-    function tokenURI(uint256 _index) public view override(ERC721, ERC721URIStorage) returns (string memory) {
-        return s_cuteNftUris[_index];
+    function tokenURI(uint256 _tokenId) public view override(ERC721, ERC721URIStorage) returns (string memory) {
+        return ERC721URIStorage.tokenURI(_tokenId);
     }
 
     //////////////////////

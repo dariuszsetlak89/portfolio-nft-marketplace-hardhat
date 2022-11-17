@@ -4,7 +4,7 @@
   "description": "My portfolio project: NFT Marketplace Dapp - Hardhat backend",
   "repository": "git@github.com:dariuszsetlak89/portfolio-nft-marketplace-hardhat.git",
   "author": "Dariusz Setlak <kryptoprogramista89@gmail.com>",
-  "license": "MIT",
+  "license": "GNU3",
   "private": true,
   "devDependencies": {
     "@chainlink/contracts": "^0.5.1",

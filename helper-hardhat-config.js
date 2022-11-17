@@ -9,13 +9,9 @@ const networkConfig = {
 
 const developmentChains = ["hardhat", "localhost"];
 
-// Next.js Moralis
-const frontEndContractsFile = "../portfolio-nft-marketplace-nextjs-moralis/constants/contractAddresses.json";
-const frontEndAbiLocation = "../portfolio-nft-marketplace-nextjs-moralis/constants/";
-
 // Next.js The Graph
-// const frontEndContractsFile = "../portfolio-nft-marketplace-nextjs-thegraph/constants/contractAddresses.json";
-// const frontEndAbiLocation = "../portfolio-nft-marketplace-nextjs-thegraph/constants/";
+const frontEndContractsFile = "../portfolio-nft-marketplace-nextjs-thegraph/constants/contractAddresses.json";
+const frontEndAbiLocation = "../portfolio-nft-marketplace-nextjs-thegraph/constants/";
 
 module.exports = {
     networkConfig,
