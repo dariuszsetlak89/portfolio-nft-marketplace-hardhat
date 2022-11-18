@@ -110,16 +110,18 @@ contract CuteNft is ERC721, ERC721URIStorage {
     /// @dev The following functions are overrides required by Solidity.
 
     /**
-     * @dev Function overrides ERC721 and ERC721URIStorage libraries functions
+     * @dev Function overrides _burn function from ERC721 and ERC721URIStorage libraries.
      * @param _tokenId unique id of new minted token
      */
-    function _burn(uint256 _tokenId) internal override(ERC721, ERC721URIStorage) {}
+    function _burn(uint256 _tokenId) internal override(ERC721, ERC721URIStorage) {
+        ERC721URIStorage._burn(_tokenId);
+    }
 
     /**
-     * @dev Getter function to get token URI of given tokenId.
-     * Function overrides ERC721 and ERC721URIStorage libraries functions.
+     * @dev Function overrides tokenURI function from ERC721 and ERC721URIStorage libraries.
+     * Function allows to get NFT token URI of given tokenId.
      * @param _tokenId unique id of new minted token
-     * @return Value of token URI of given _tokenId
+     * @return Value of NFT token URI of given _tokenId
      */
     function tokenURI(uint256 _tokenId) public view override(ERC721, ERC721URIStorage) returns (string memory) {
         return ERC721URIStorage.tokenURI(_tokenId);
@@ -138,8 +140,8 @@ contract CuteNft is ERC721, ERC721URIStorage {
     }
 
     /**
-     * @dev Getter function to get the total number of NFTs minted using this contract.
-     * @return Total number of NFTs minted using this contract
+     * @dev Getter function to get the total number of NFT tokens minted using this contract.
+     * @return Total number of NFT tokens minted using this contract
      */
     function getTokenCounter() public view returns (Counters.Counter memory) {
         return s_tokenIdCounter;
