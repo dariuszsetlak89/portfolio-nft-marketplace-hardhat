@@ -26,14 +26,9 @@ developmentChains.includes(network.name)
               // await deployments.fixture(["all"]);
               //////////////////////////////////////////////////////////////////////
 
-              //// Get accounts: deployer, user
               [deployer, user] = await ethers.getSigners();
-
-              //// Get contract: nftMarketplace
               nftMarketplaceContract = await ethers.getContract("NftMarketplace");
               nftMarketplace = nftMarketplaceContract.connect(deployer);
-
-              //// Get contract: CuteNft
               cuteNftContract = await ethers.getContract("CuteNft");
               cuteNft = cuteNftContract.connect(deployer);
           });
@@ -93,7 +88,10 @@ developmentChains.includes(network.name)
                   console.log("First cuteNft seller:", firstListing.seller.toString());
                   //
                   secondListing = await nftMarketplace.getListing(cuteNft.address, 1);
-                  console.log("Second cuteNft listing price:", ethers.utils.formatEther(secondListing.price.toString()));
+                  console.log(
+                      "Second cuteNft listing price:",
+                      ethers.utils.formatEther(secondListing.price.toString())
+                  );
                   console.log("Second cuteNft seller:", secondListing.seller.toString());
                   //
                   thirdListing = await nftMarketplace.getListing(cuteNft.address, 2);
@@ -166,10 +164,16 @@ developmentChains.includes(network.name)
                   console.log("7) Deployer witrdraws proceeds");
                   nftMarketplace = nftMarketplaceContract.connect(deployer);
                   deployerBalanceBefore = await deployer.getBalance();
-                  console.log("Deployer balance before proceeds withdrawal:", ethers.utils.formatEther(deployerBalanceBefore));
+                  console.log(
+                      "Deployer balance before proceeds withdrawal:",
+                      ethers.utils.formatEther(deployerBalanceBefore)
+                  );
                   expect(await nftMarketplace.withdrawProceeds()).to.emit("ProceedsWithdrawalSuccess");
                   deployerBalanceAfter = await deployer.getBalance();
-                  console.log("Deployer balance after proceeds withdrawal:", ethers.utils.formatEther(deployerBalanceAfter));
+                  console.log(
+                      "Deployer balance after proceeds withdrawal:",
+                      ethers.utils.formatEther(deployerBalanceAfter)
+                  );
                   console.log(
                       "Deployer balance difference:",
                       ethers.utils.formatEther(await deployerBalanceAfter.sub(deployerBalanceBefore))

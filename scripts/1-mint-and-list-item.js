@@ -15,11 +15,8 @@ async function mintAndListItem() {
         approvalTx,
         listTx;
 
-    // Get accounts
+    // Get signers
     deployer = (await ethers.getSigners())[0];
-    // user = (await ethers.getSigners())[1];
-    // console.log("Deployer address:", deployer.address); // account[0]
-    // console.log("User address:", user.address); // account[1]
 
     //////////////////////////////////////////////////////
     // Listing price choice:
@@ -36,13 +33,11 @@ async function mintAndListItem() {
     const nftAmount = 3;
     //////////////////////////////////////////////////////
 
-    // Get contract: nftMarketplace
+    // Get contracts
     nftMarketplaceContract = await ethers.getContract("NftMarketplace");
     nftMarketplace = nftMarketplaceContract.connect(NFT_OWNER);
-    // Get contract: CuteNft
     cuteNftContract = await ethers.getContract("CuteNft");
     cuteNft = cuteNftContract.connect(NFT_OWNER);
-    // console.log("CuteNft address:", cuteNft.address);
 
     for (let i = 0; i < nftAmount; i++) {
         // Minting

@@ -20,12 +20,6 @@ error CuteNft__InvalidFunctionCall();
  * @author Dariusz Setlak
  * @notice The CuteNft Smart Contract
  * @dev The smart contract for minting test basic NFTs for testing `NFT Marketplace`.
- * Smart contract contains the following functions:
- * Init function: _initializeContract
- * External functions: mintNft
- * Override functions: _burn, tokenURI
- * Getter functions: getInitialized, getTokenCounter
- * Other functions: receive, fallback
  */
 contract CuteNft is ERC721, ERC721URIStorage {
     using Counters for Counters.Counter;

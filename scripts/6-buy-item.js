@@ -20,10 +20,9 @@ async function buyItem() {
     const TOKEN_ID = 2;
     /////////////////////////////
 
-    // Get contract: nftMarketplace
+    // Get contracts
     nftMarketplaceContract = await ethers.getContract("NftMarketplace");
     nftMarketplace = nftMarketplaceContract.connect(NFT_BUYER);
-    // Get contract: CuteNft
     cuteNftContract = await ethers.getContract("CuteNft");
     cuteNft = cuteNftContract.connect(NFT_BUYER);
     console.log("CuteNft address:", cuteNft.address);

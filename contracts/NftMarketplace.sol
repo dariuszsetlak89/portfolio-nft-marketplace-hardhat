@@ -28,9 +28,6 @@ error NftMarketplace__NoProceeds();
  * @author Dariusz Setlak
  * @notice The NFT Marketplace Smart Contract
  * @dev The main smart contract of `NFT Marketplace` containing the following functions:
- * External functions: listItem, buyItem, cancelListing, updateListing, withdrawProceeds
- * Getter functions: getListing, getProceeds, getBalance
- * Other functions: receive, fallback
  */
 contract NftMarketplace is ReentrancyGuard {
     ///////////////
@@ -137,14 +134,6 @@ contract NftMarketplace is ReentrancyGuard {
      * 2. Owners can still hold their NFT, and give the marketplace approval to sell the NFT for them.
      * In this project, second option was chosen.
      *
-     * Function checks if the NFT item is not yet listed on the marketplace and if `msg.sender` is
-     * the `owner` of the item, by using appropriate midifiers. Then function check, if listing
-     * price set by user is > 0, and if not transaction reverts. Then function creates previously
-     * listed NFT contract using given `nftAddress` and imported NFT token interface. Next function
-     * check neccessary approvals given by NFT owner for `NFT Marketplace` contract. If approvals
-     * are correct, function finally list the NFT item, by updating `s_listings` mapping and emit
-     * the `ItemListed` event.
-     *
      * @param nftAddress listing NFT item contract address
      * @param tokenId listing NFT item tokenId
      * @param price the sale price of listing NFT item
@@ -171,16 +160,6 @@ contract NftMarketplace is ReentrancyGuard {
     /**
      * @notice Function for buy NFT item on the NFT Marketplace.
      * @dev Function allows user buy chosen NFT item on the NFT Marketplace.
-     * This is external function, invoked by the user, using front-end application.
-     *
-     * Function checks if the NFT item is listed on the marketplace, by using appropriate midifiers.
-     * Then function checks if value sent with transaction met the NFT item price and if not, transaction
-     * reverts. Then function add sent ETH amount to seller's account by updating the mapping `s_proceeds`.
-     * Next function delete bought NFT item from marketplace listings and finally transfer NFT item
-     * to buyer's address and emit the `ItemBought` event.
-     *
-     * Function is protected from reentrancy attack, by using `nonReentrant` modifier from OpenZeppelin library.
-     *
      * @param nftAddress listing NFT item contract address
      * @param tokenId listing NFT item tokenId
      */
@@ -209,12 +188,6 @@ contract NftMarketplace is ReentrancyGuard {
     /**
      * @notice Function for cancel NFT item listing on the NFT Marketplace.
      * @dev Function allows user to cancel previously listed NFT item from NFT Marketplace listings.
-     * This is external function, invoked by the user, using front-end application.
-     *
-     * Function checks if the NFT item is not yet listed on the marketplace and if `msg.sender` is
-     * the `owner` of the item, by using appropriate midifiers. Then function delete chosen for cancel
-     * NFT item from marketplace listings and emit the `ItemCanceled` event.
-     *
      * @param nftAddress listing NFT item contract address
      * @param tokenId listing NFT item tokenId
      */
@@ -230,12 +203,6 @@ contract NftMarketplace is ReentrancyGuard {
     /**
      * @notice Function for update NFT item listing price on the NFT Marketplace.
      * @dev Function allows user to update the price of already listed NFT item on NFT Marketplace.
-     * This is external function, invoked by the user, using front-end application.
-     *
-     * Function checks if the NFT item is  listed on the marketplace and if `msg.sender` is the `owner`
-     * of the item, by using appropriate midifiers. Then function update listed NFT item price, actually
-     * by listing it again with the new price and emit the `ItemListed` event.
-     *
      * @param nftAddress listing NFT item contract address
      * @param tokenId listing NFT item tokenId
      * @param newPrice new NFT item listing purchase price
@@ -253,12 +220,6 @@ contract NftMarketplace is ReentrancyGuard {
     /**
      * @notice Function for withdrawing accumulated by NFT seller funds.
      * @dev Function allows user to withdraw accumulated by the NFT seller funds.
-     * This is external function, invoked by the user, using front-end application.
-     *
-     * Function checks if the user has any amount of funds to withdraw and if not, then transaction reverse.
-     * Then function update `s_proceeds` mapping of the `msg.sender` to 0, because user withdraw all of the
-     * accumulated funds. Then finally function transfer accumulated by user (seller) funds to his account and
-     * checks, if transaction is done correctly and if not, then whole transactio reverts.
      */
     function withdrawProceeds() external {
         uint256 proceeds = s_proceeds[msg.sender];

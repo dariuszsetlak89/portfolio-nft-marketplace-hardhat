@@ -6,7 +6,6 @@ async function getTokenUri() {
     /// Get accounts
     [deployer, user] = await ethers.getSigners();
     console.log("Deployer address:", deployer.address); // account[0]
-    // console.log("User address:", user.address); // account[1]
 
     /////////////////////////////
     // tokenId of the NFT:

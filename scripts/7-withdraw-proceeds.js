@@ -3,7 +3,13 @@ const { moveBlocks } = require("../utils/move-blocks");
 const { developmentChains } = require("../helper-hardhat-config");
 
 async function withdrawProceeds() {
-    let deployer, nftMarketplaceContract, nftMarketplace, sellerBalanceBefore, withdrawalTx, sellerBalanceAfter, withdrawalAmount;
+    let deployer,
+        nftMarketplaceContract,
+        nftMarketplace,
+        sellerBalanceBefore,
+        withdrawalTx,
+        sellerBalanceAfter,
+        withdrawalAmount;
 
     // Get accounts
     [deployer, user] = await ethers.getSigners();
@@ -15,7 +21,7 @@ async function withdrawProceeds() {
     const SELLER = deployer;
     ////////////////////////////////////////////
 
-    // Get contract: nftMarketplace
+    // Get contracts
     nftMarketplaceContract = await ethers.getContract("NftMarketplace");
     nftMarketplace = nftMarketplaceContract.connect(SELLER);
 

@@ -10,21 +10,12 @@ const { developmentChains } = require("../../helper-hardhat-config");
           const TOKEN_ID = 0;
 
           beforeEach(async () => {
-              //// Deploy all smart contracts
               await deployments.fixture(["all"]);
-
-              //// Get accounts: deployer, user
               [deployer, user] = await ethers.getSigners();
-
-              //// Get contract: nftMarketplace
               nftMarketplaceContract = await ethers.getContract("NftMarketplace");
               nftMarketplace = nftMarketplaceContract.connect(deployer);
-
-              //// Get contract: CuteNft
               cuteNftContract = await ethers.getContract("CuteNft");
               cuteNft = cuteNftContract.connect(deployer);
-
-              //// Mint NFTs - deployer
               await cuteNft.mintNft(deployer.address, 0);
               await cuteNft.approve(nftMarketplace.address, TOKEN_ID);
           });
@@ -45,7 +36,6 @@ const { developmentChains } = require("../../helper-hardhat-config");
           describe("mintNft", () => {
               it("allows users to mint an NFT and updates appropriately", async () => {
                   const deployerNftBalance = await cuteNft.balanceOf(deployer.address);
-                  // console.log("deployerNftBalance:", deployerNftBalance.toString());
                   assert.equal(deployerNftBalance, 1);
               });
               it("increments `tokenIdCounter` after NFT mint", async () => {
@@ -65,7 +55,6 @@ const { developmentChains } = require("../../helper-hardhat-config");
           describe("getTokenCounter", async () => {
               it("should return the total number of NFTs minted using this contract", async () => {
                   const tokenCounter = await cuteNft.getTokenCounter();
-                  // console.log("tokenCounter:", tokenCounter.toString());
                   expect(tokenCounter.toString()).to.equal("1");
               });
           });

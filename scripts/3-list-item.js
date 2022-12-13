@@ -25,10 +25,9 @@ async function listItem() {
     const TOKEN_ID = 1;
     //////////////////////////////
 
-    // Get contract: nftMarketplace
+    // Get contracts
     nftMarketplaceContract = await ethers.getContract("NftMarketplace");
     nftMarketplace = nftMarketplaceContract.connect(NFT_OWNER);
-    // Get contract: CuteNft
     cuteNftContract = await ethers.getContract("CuteNft");
     cuteNft = cuteNftContract.connect(NFT_OWNER);
     console.log("CuteNft address:", cuteNft.address);
@@ -45,7 +44,9 @@ async function listItem() {
     listTx = await nftMarketplace.listItem(cuteNft.address, TOKEN_ID, LISTING_PRICE);
     await listTx.wait(1);
     console.log("Listing done.");
-    console.log(`NFT approved and listed: TokenID: ${TOKEN_ID}, Listing price: ${ethers.utils.formatEther(LISTING_PRICE)} ETH`);
+    console.log(
+        `NFT approved and listed: TokenID: ${TOKEN_ID}, Listing price: ${ethers.utils.formatEther(LISTING_PRICE)} ETH`
+    );
 
     // Mining blocks on local network
     if (developmentChains.includes(network.name)) {

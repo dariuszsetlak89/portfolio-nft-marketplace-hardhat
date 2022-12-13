@@ -14,9 +14,8 @@ module.exports = async function () {
 };
 
 async function updateContractAddresses() {
-    // Get contract: NftMarketplace
+    // Get contracts
     const nftMarketplace = await ethers.getContract("NftMarketplace");
-    // Get contract: CuteNft
     const cuteNft = await ethers.getContract("CuteNft");
     // Read existing addresses from file
     const contractAddresses = JSON.parse(fs.readFileSync(frontEndContractsFile, "utf8"));
@@ -24,7 +23,6 @@ async function updateContractAddresses() {
     if (chainId in contractAddresses) {
         // NftMarketplace contract address update
         const nftMarketplaceChainAddress = contractAddresses[chainId]["NftMarketplace"];
-        // console.log(nftMarketplaceChainAddress);
         if (!nftMarketplaceChainAddress.includes(nftMarketplace.address)) {
             nftMarketplaceChainAddress.pop();
             nftMarketplaceChainAddress.push(nftMarketplace.address);
@@ -46,12 +44,14 @@ async function updateContractAddresses() {
 }
 
 async function updateAbi() {
-    // Get contract: NftMarketplace
+    // Get contracts
     const nftMarketplace = await ethers.getContract("NftMarketplace");
-    // Get contract: CuteNft
     const cuteNft = await ethers.getContract("CuteNft");
     // Write to file
-    fs.writeFileSync(`${frontEndAbiLocation}NftMarketplace.json`, nftMarketplace.interface.format(ethers.utils.FormatTypes.json));
+    fs.writeFileSync(
+        `${frontEndAbiLocation}NftMarketplace.json`,
+        nftMarketplace.interface.format(ethers.utils.FormatTypes.json)
+    );
     fs.writeFileSync(`${frontEndAbiLocation}CuteNft.json`, cuteNft.interface.format(ethers.utils.FormatTypes.json));
 }
 

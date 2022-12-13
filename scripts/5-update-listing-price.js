@@ -25,10 +25,9 @@ async function updateListingPrice() {
     const NEW_PRICE = ethers.utils.parseEther("0.2");
     ////////////////////////////////////////////////
 
-    // Get contract: nftMarketplace
+    // Get contracts
     nftMarketplaceContract = await ethers.getContract("NftMarketplace");
     nftMarketplace = nftMarketplaceContract.connect(NFT_OWNER);
-    // Get contract: CuteNft
     cuteNftContract = await ethers.getContract("CuteNft");
     cuteNft = cuteNftContract.connect(NFT_OWNER);
     console.log("CuteNft address:", cuteNft.address);
@@ -38,7 +37,9 @@ async function updateListingPrice() {
     updateTx = await nftMarketplace.updateListing(cuteNft.address, TOKEN_ID, NEW_PRICE);
     await updateTx.wait(1);
     console.log("Listing price updated.");
-    console.log(`NFT price updated: TokenID: ${TOKEN_ID}, New price: ${ethers.utils.formatEther(NEW_PRICE.toString())} ETH`);
+    console.log(
+        `NFT price updated: TokenID: ${TOKEN_ID}, New price: ${ethers.utils.formatEther(NEW_PRICE.toString())} ETH`
+    );
 
     // Mining blocks on local network
     if (developmentChains.includes(network.name)) {
